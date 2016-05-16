@@ -6179,7 +6179,7 @@ void Kine::IKSolve(double* tCOG, double* tSwing, double* tRSwing, double* tRFixe
 			else if( RunDynamics == 1)
 				TarRotMBody[i]=	tRFixed[i];
 			else
-				TarRotMBody[i]=	(tRSwing[i]+tRFixed[i])/2.0;
+				TarRotMBody[i]=	tRFixed[i]; //TarRotMBody[i]=	(tRSwing[i]+tRFixed[i])/2.0;
 		}
 		// normalize
 		temp_scale = sqrt(TarRotMBody[0]*TarRotMBody[0]+TarRotMBody[3]*TarRotMBody[3]+TarRotMBody[6]*TarRotMBody[6]);

@@ -60,3 +60,5 @@ void Mat_A_B_At(double* A, int MA, int NA, double* B, int MB, int NB, double* re
 void Mat_a_x_b(double* v1, double* v2, double* v3);
 void showMat(double* A,int Nrow, int Ncol, char * MatName );//ok
 void showVar(double x,char * VarName);//ok
+
+void R_rpy( double r,double p, double y ,double *result); //160504 r,p,y angle to Rotation Matrix

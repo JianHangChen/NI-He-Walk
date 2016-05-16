@@ -579,6 +579,11 @@ TwinCAT_COM *TCAT;
 	double gPitchAngRBuf[10000]; // 右腳pitch每步旋轉角度軌跡 提供最長每步50秒之暫存空間 用以儲存單步軌跡
 	//20121214doratom//
 
+	//20160509 uneven terrain
+	double gAngLPBuf[10000];//pitch buffer for left leg
+	double gAngRPBuf[10000];//pitch buffer for right leg
+
+
 	double gGroundHeight[10000]; // ground height, 10000步
 
 	int gNza; // 將一步切成三段 第一段格點數  gNza = gStepSample * DSP /2.0
@@ -1368,8 +1373,8 @@ void CRobotAllDlg::OnBnClickedButton1() // the button "Start"
 		if (gFlagSimulation == RealExp && gFlagReadForceSensor==0)	
 		{
 		  #if TwinCAT_Mode
-		  printf("Wait 5 seconds for TwinCAT...\n");
-		  Sleep(5000);		  
+		  //printf("Wait 5 seconds for TwinCAT...\n");
+		  //Sleep(5000);		  
 		  TCAT=new TwinCAT_COM();
 		  gDeleteLogFile();
 		  #else
@@ -3612,6 +3617,17 @@ void gArmControlThread(void)
 	  double StepProcess = 0.0; // 計算每步進行的百分比 從0~1
 	  double AngL, AngR; // 左右腳在z軸的旋轉方向
 
+	  AngL = gAngLBuf[gIthIK%gStepSample];
+	  AngR = gAngRBuf[gIthIK%gStepSample];
+
+
+	  double AngLP;//左右腳在y軸的旋轉方向 20160509
+	  double AngRP=0;
+	  AngLP = gAngLPBuf[gIthIK%gStepSample];//20160509
+	  //AngRP = gAngRPBuf[gIthIK%gStepSample];//20160509
+
+
+
 	  double AngPitchL = 0;
 	  double AngPitchR = 0;	  //20121214doratom//
 	  double AngPitchF, AngPitchS, AngRollF, AngRollS;	// 0210 WZ
@@ -3658,16 +3674,12 @@ void gArmControlThread(void)
 			gSwingInputIK[2] = gKineAll.remLL[2];				
 		}
 		
-		// 設定 swing fix 腳 角度  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		AngL = gAngLBuf[gIthIK%gStepSample];
-		AngR = gAngRBuf[gIthIK%gStepSample];
 		
 		//20121214doratom//
 		AngPitchL = gPitchAngLBuf[gIthIK%gStepSample];
 		AngPitchR = gPitchAngRBuf[gIthIK%gStepSample];
 
-		AngPitchL = gPitchAngLBuf[gIthIK%gStepSample];
-		AngPitchR = gPitchAngRBuf[gIthIK%gStepSample];
+
 		//20121214doratom//
 
 		if (RunDynamics == 1 && TuneWhich > 0)	//20140225WZ
@@ -3706,16 +3718,20 @@ void gArmControlThread(void)
 
 		if (gKineAll.selIK == LeftSupport)
 		{
-			gKineAll.TarRotMSw[0] = cos(AngR); gKineAll.TarRotMSw[1] = -sin(AngR); gKineAll.TarRotMSw[2] = 0;
-			gKineAll.TarRotMSw[3] = sin(AngR); gKineAll.TarRotMSw[4] = cos(AngR); gKineAll.TarRotMSw[5] = 0;
-			gKineAll.TarRotMSw[6] = 0; gKineAll.TarRotMSw[7] = 0; gKineAll.TarRotMSw[8] = 1;
-			//gKineAll.TarRotMSw[0] = cos(AngR); gKineAll.TarRotMSw[1] =0 ; gKineAll.TarRotMSw[2] = sin(AngR);
-			//gKineAll.TarRotMSw[3] = 0; gKineAll.TarRotMSw[4] = 1; gKineAll.TarRotMSw[5] = 0;
-			//gKineAll.TarRotMSw[6] = -sin(AngR); gKineAll.TarRotMSw[7] = 0; gKineAll.TarRotMSw[8] = cos(AngR);
+			//gKineAll.TarRotMSw[0] = cos(AngR); gKineAll.TarRotMSw[1] = -sin(AngR); gKineAll.TarRotMSw[2] = 0;
+			//gKineAll.TarRotMSw[3] = sin(AngR); gKineAll.TarRotMSw[4] = cos(AngR); gKineAll.TarRotMSw[5] = 0;
+			//gKineAll.TarRotMSw[6] = 0; gKineAll.TarRotMSw[7] = 0; gKineAll.TarRotMSw[8] = 1;
+			////gKineAll.TarRotMSw[0] = cos(AngR); gKineAll.TarRotMSw[1] =0 ; gKineAll.TarRotMSw[2] = sin(AngR);
+			////gKineAll.TarRotMSw[3] = 0; gKineAll.TarRotMSw[4] = 1; gKineAll.TarRotMSw[5] = 0;
+			////gKineAll.TarRotMSw[6] = -sin(AngR); gKineAll.TarRotMSw[7] = 0; gKineAll.TarRotMSw[8] = cos(AngR);
 
-			gKineAll.TarRotMFx[0] = cos(AngL); gKineAll.TarRotMFx[1] = -sin(AngL); gKineAll.TarRotMFx[2] = 0;
-			gKineAll.TarRotMFx[3] = sin(AngL); gKineAll.TarRotMFx[4] = cos(AngL); gKineAll.TarRotMFx[5] = 0;
-			gKineAll.TarRotMFx[6] = 0; gKineAll.TarRotMFx[7] = 0; gKineAll.TarRotMFx[8] = 1;
+			//gKineAll.TarRotMFx[0] = cos(AngL); gKineAll.TarRotMFx[1] = -sin(AngL); gKineAll.TarRotMFx[2] = 0;
+			//gKineAll.TarRotMFx[3] = sin(AngL); gKineAll.TarRotMFx[4] = cos(AngL); gKineAll.TarRotMFx[5] = 0;
+			//gKineAll.TarRotMFx[6] = 0; gKineAll.TarRotMFx[7] = 0; gKineAll.TarRotMFx[8] = 1;
+
+			R_rpy(0,AngRP,AngR,gKineAll.TarRotMSw);
+			//R_rpy(0,AngL,0,gKineAll.TarRotMFx);//test for pitch
+			R_rpy(0,AngLP,AngL,gKineAll.TarRotMFx);
 
 			if(check_slopeangle ==1)//20121214doratom//
 			{
@@ -3754,13 +3770,19 @@ void gArmControlThread(void)
 		}
 		else if (gKineAll.selIK == RightSupport || gKineAll.selIK == DoubleSupport)
 		{
-			gKineAll.TarRotMSw[0] = cos(AngL); gKineAll.TarRotMSw[1] = -sin(AngL); gKineAll.TarRotMSw[2] = 0;
+			/*gKineAll.TarRotMSw[0] = cos(AngL); gKineAll.TarRotMSw[1] = -sin(AngL); gKineAll.TarRotMSw[2] = 0;
 			gKineAll.TarRotMSw[3] = sin(AngL); gKineAll.TarRotMSw[4] = cos(AngL); gKineAll.TarRotMSw[5] = 0;
 			gKineAll.TarRotMSw[6] = 0; gKineAll.TarRotMSw[7] = 0; gKineAll.TarRotMSw[8] = 1;
 
 			gKineAll.TarRotMFx[0] = cos(AngR); gKineAll.TarRotMFx[1] = -sin(AngR); gKineAll.TarRotMFx[2] = 0;
 			gKineAll.TarRotMFx[3] = sin(AngR); gKineAll.TarRotMFx[4] = cos(AngR); gKineAll.TarRotMFx[5] = 0;
 			gKineAll.TarRotMFx[6] = 0; gKineAll.TarRotMFx[7] = 0; gKineAll.TarRotMFx[8] = 1;
+			*/
+
+
+			//R_rpy(0,AngL,0,gKineAll.TarRotMSw);//test left pich
+			R_rpy(0,AngLP,AngL,gKineAll.TarRotMSw);
+			R_rpy(0,AngRP,AngR,gKineAll.TarRotMFx);
 
 			if(check_slopeangle ==1)//20121214doratom//
 			{
@@ -4635,6 +4657,43 @@ void gArmControlThread(void)
 				}
 			}
 
+			
+
+			//20160506 first step rotation test go go go
+
+			double tempAngle=0.13143;//0.13143;
+			if (gKineAll.stepIndex == 1)
+			{
+
+				gKineAll.GenSmoothZMPShift_ZeroJerk(0,0,gStepSample/2,gAngLPBuf);
+				gKineAll.GenSmoothZMPShift_ZeroJerk(0,-tempAngle,gStepSample/2,gAngLPBuf+gStepSample/2);
+			}
+			else if (gKineAll.stepIndex == 2)
+			{
+
+				gKineAll.GenSmoothZMPShift_ZeroJerk(-tempAngle,-tempAngle,gStepSample,gAngLPBuf);
+				gKineAll.GenSmoothZMPShift_ZeroJerk(0,0,gStepSample,gAngLPBuf);
+
+			}
+			else if (gKineAll.stepIndex == 3)
+			{
+				gKineAll.GenSmoothZMPShift_ZeroJerk(-tempAngle,0,gStepSample/2,gAngLPBuf);
+				gKineAll.GenSmoothZMPShift_ZeroJerk(0,0,gStepSample/2,gAngLPBuf+gStepSample/2);
+
+			}
+			//else if(gKineAll.stepIndex == 4)
+			//{
+			//	gKineAll.GenSmoothZMPShift_ZeroJerk(0.5,0,gStepSample,gAngLPBuf);
+			//}
+			else
+			{
+				for(int i = 0; i < gStepSample ;++i)
+				{
+					gAngLPBuf[i] = 0;
+				}
+			}
+			//20160506 first step rotation test end
+
 			// 判斷下一格是否要換腳 要的話就進入進行資料記憶以及之後切換腳的切換準備
 			// 記下所有換腳時的資訊 很重要 不然機器人不知道接下來固定腳的位置與角度
 			gKineAll.remLL[0] = gKineAll.CrdAll->data[18];
@@ -5435,8 +5494,8 @@ void gIMUdata(void){
 	if (gFlagReadForceSensor==1)
 	{
 		  #if TwinCAT_Mode
-		  printf("Wait 5 seconds for TwinCAT...\n");
-		  Sleep(5000);
+		 // printf("Wait 5 seconds for TwinCAT...\n");
+		//  Sleep(5000);
 		  TCAT=new TwinCAT_COM();		  
 		  gDeleteLogFile();
 		  #else
@@ -7774,7 +7833,7 @@ void gInitWalkStraight(int StepInput, double StepLength)
 
 	******************************************************************/
 	gNumOfStep = StepInput; // 包含初始、轉換與preivew的總步數
-	gCOGDown = 9;//36; // 愈少膝蓋愈直 比較像人 也比較省力
+	gCOGDown = 25;//9,25,36; // 愈少膝蓋愈直 比較像人 也比較省力
 	if(gNumOfStep==7)//Specific Ver. Warn.
 		checkonestep = 1;
 	gKineAll.FlagSumoMode = 0;
@@ -7909,6 +7968,31 @@ void gInitWalkStraight(int StepInput, double StepLength)
 
 	for (int i = 0 ; i < gNumOfStep+25 ; i++)
 		gGroundHeight[i] = 0.0;
+	//20160506 first step rotation test go go go
+	gGroundHeight[2]=11.5;
+
+
+	gFstpY[0] = 0; 
+	gFstpY[1] = 0; 
+	gFstpY[2] = 100; 
+	gFstpY[3] = 230; 
+	gFstpY[4] = 360; 
+	gFstpY[5] = 360; 
+	gFstpY[6] = 360; 
+	gFstpY[7] = 360; 
+
+
+	//gFstpY[0] = 0; 0
+	//gFstpY[1] = 0; 0
+	//gFstpY[2] = 150; 100 
+	//gFstpY[3] = 300; 200 
+	//gFstpY[4] = 430; 300  
+	//gFstpY[5] = 430; 300 
+	//gFstpY[6] = 430; 300
+	//gFstpY[7] = 430; 300
+
+
+	//20160506 first step rotation test end
 }
 
 void gInitStayMode(double StayTime)
