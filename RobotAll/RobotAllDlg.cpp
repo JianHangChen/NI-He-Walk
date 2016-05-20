@@ -4480,7 +4480,7 @@ void gArmControlThread(void)
 				{
 					if (gStrideZ <= -15 ) //  -15mm~ -80 down stairs
 					{
-						Swingratio = 0.3;
+						Swingratio = 0.5;
 						gKineAll.GenSwingTrajMod(0,0,Swingratio,gKineAll.StepHeight[gKineAll.stepIndex],0,gStrideX,gStrideZ,0,0,gKineAll.Nab,0, gKineAll.SwingBufferx, gKineAll.SwingBufferz);
 						gKineAll.GenSwingTrajMod(0,0,Swingratio,gKineAll.StepHeight[gKineAll.stepIndex],0,gStrideY,gStrideZ,0,0,gKineAll.Nab,0, gKineAll.SwingBuffery, gKineAll.SwingBufferz);
 					}
@@ -7833,7 +7833,7 @@ void gInitWalkStraight(int StepInput, double StepLength)
 
 	******************************************************************/
 	gNumOfStep = StepInput; // 包含初始、轉換與preivew的總步數
-	gCOGDown = 21;//9,25,36; // 愈少膝蓋愈直 比較像人 也比較省力
+	gCOGDown = 17;//9,25,36; // 愈少膝蓋愈直 比較像人 也比較省力
 	if(gNumOfStep==7)//Specific Ver. Warn.
 		checkonestep = 1;
 	gKineAll.FlagSumoMode = 0;
@@ -7969,21 +7969,26 @@ void gInitWalkStraight(int StepInput, double StepLength)
 	for (int i = 0 ; i < gNumOfStep+25 ; i++)
 		gGroundHeight[i] = 0.0;
 	//20160506 first step rotation test go go go
+	int templheight=1;
 	gGroundHeight[2]=11.5;
-	gGroundHeight[3]=-5;
-	gGroundHeight[4]=-5;
-	gGroundHeight[5]=-5;
-	gGroundHeight[6]=-5;
-	gGroundHeight[7]=-5;
+	gGroundHeight[3]=templheight;
+	gGroundHeight[4]=23;
+	gGroundHeight[5]=templheight;
+	gGroundHeight[6]=templheight;
+	gGroundHeight[7]=templheight;
+	gGroundHeight[8]=templheight;
+	gGroundHeight[9]=templheight;
 
 	gFstpY[0] = 0; 
 	gFstpY[1] = 0; 
 	gFstpY[2] = 100; 
-	gFstpY[3] = 240; 
-	gFstpY[4] = 410; 
-	gFstpY[5] = 410; 
-	gFstpY[6] = 410; 
-	gFstpY[7] = 410; 
+	gFstpY[3] = 220; 
+	gFstpY[4] = 240; 
+	gFstpY[5] = 285; 
+	gFstpY[6] = 350; 
+	gFstpY[7] = 350; 
+	gFstpY[8] = 350;
+	gFstpY[9] = 350;
 
 
 	//gFstpY[0] = 0; 0
@@ -11985,7 +11990,7 @@ void gPrepareScenarioScript(int SecNo)
 				 //gFlagGoBackPos = BentHome;
 				 //if (ReTune == 0)
 				 //{
-					gInitWalkStraight(9,200);
+					gInitWalkStraight(11,200);
 				 //}
 				 //else if (ReTune == 1)
 				 //{
