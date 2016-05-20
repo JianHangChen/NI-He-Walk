@@ -292,3 +292,13 @@ hit_count  0  LFX_max_count   0  step_length   0  swingx_now  0  modified in   a
 
 hit_count  0  LFX_max_count   0  step_length   0  swingx_now  0  modified in   acceleration phase 
 
+hit_count  0  LFX_max_count   0  step_length   0  swingx_now  0  modified in   acceleration phase 
+
+hit_count  0  LFX_max_count   0  step_length   0  swingx_now  0  modified in   acceleration phase 
+
+hit_count  0  LFX_max_count   0  step_length   0  swingx_now  0  modified in   acceleration phase 
+
+hit_count  0  LFX_max_count   0  step_length   0  swingx_now  0  modified in   acceleration phase 
+
+hit_count  0  LFX_max_count   0  step_length   0  swingx_now  0  modified in   acceleration phase 
+

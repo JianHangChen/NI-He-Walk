@@ -7833,7 +7833,7 @@ void gInitWalkStraight(int StepInput, double StepLength)
 
 	******************************************************************/
 	gNumOfStep = StepInput; // 包含初始、轉換與preivew的總步數
-	gCOGDown = 25;//9,25,36; // 愈少膝蓋愈直 比較像人 也比較省力
+	gCOGDown = 21;//9,25,36; // 愈少膝蓋愈直 比較像人 也比較省力
 	if(gNumOfStep==7)//Specific Ver. Warn.
 		checkonestep = 1;
 	gKineAll.FlagSumoMode = 0;
@@ -7970,16 +7970,20 @@ void gInitWalkStraight(int StepInput, double StepLength)
 		gGroundHeight[i] = 0.0;
 	//20160506 first step rotation test go go go
 	gGroundHeight[2]=11.5;
-
+	gGroundHeight[3]=-5;
+	gGroundHeight[4]=-5;
+	gGroundHeight[5]=-5;
+	gGroundHeight[6]=-5;
+	gGroundHeight[7]=-5;
 
 	gFstpY[0] = 0; 
 	gFstpY[1] = 0; 
 	gFstpY[2] = 100; 
-	gFstpY[3] = 230; 
-	gFstpY[4] = 360; 
-	gFstpY[5] = 360; 
-	gFstpY[6] = 360; 
-	gFstpY[7] = 360; 
+	gFstpY[3] = 240; 
+	gFstpY[4] = 410; 
+	gFstpY[5] = 410; 
+	gFstpY[6] = 410; 
+	gFstpY[7] = 410; 
 
 
 	//gFstpY[0] = 0; 0
